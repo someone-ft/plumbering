@@ -8,7 +8,7 @@ set /a Num3=%random% %% range + min
 set /a Num4=%random% %% range + min
 set key=plkey-%Num1%-%Num2%-%Num3%-%Num4%
 echo %key%
-echo %key% > %key%.txt
+echo %key% > key.json
 setlocal
 
 REM Set your API token
@@ -49,9 +49,7 @@ for /f "tokens=*" %%i in (response.json) do (
 REM Clean up
 cls
 del response.json
-del %key%.txt
 echo your key is : %key%
 echo its 1 time use btw
 
 pause >nul
-endlocal

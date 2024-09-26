@@ -18,33 +18,26 @@ echo              .JMML.    .JMMmmmmMMM               ╚═══════�
 echo.
 echo.
 
-set /p "keyans=key="
-setlocal
-
-rem Set the required variables
-set "GofileURL=https://api.gofile.io/contents/search"
-set "TOKEN=662AujeWK3FhsbGI2eSWwE2ikwkO1iDD"  rem Replace with your API token
-set "CONTENT_ID=c01398a8-3fef-47a7-b653-a74a4d1184fe"  rem Replace with your folder ID
-set "SEARCHED_STRING=%keyans%"  rem Replace with your search string
-
-rem Construct the curl command
-set "CURL_CMD=curl -H 'Authorization: Bearer %TOKEN%' '%GofileURL%?%CONTENT_ID%&searchedString=%SEARCHED_STRING%.txt'
-
-rem Execute the curl command
-echo Searching for content...
-set "HTTP_CODE="
-for /f "delims=" %%i in ('%CURL_CMD%') do set "HTTP_CODE=%%i"
-
-rem Check the HTTP response code
-if "%HTTP_CODE%"=="200" (
-    goto main
+set /p key= < key.json
+echo %key% | findstr /i "plkey-" >nul
+if not errorlevel 1 (
+    goto lg2
 ) else (
-    goto lg1
+    echo false key detected..
+    echo stopping the process..
+    timeout 1 >nul
+    exit
+
 )
 
-endlocal
 
-pause
+:lg2
+echo %key%
+set /p "keyans=key="
+if %keyans%==%key% goto main
+
+goto lg1
+
 
 :main      
 del key.txt         
@@ -74,6 +67,7 @@ echo.
 echo.
 set /p choice="pl-cmd>"
 if %choice%==1 goto c1
+if %choice%==2 goto c2
 
 
 :c1
@@ -82,3 +76,23 @@ echo cleaning
 ipconfig /flushdns
 echo done
 goto :main
+:c2
+cls                                
+echo.
+echo                                                  [92m███████████████████████████████████████████████████████████████████
+echo [37m             `7MM"""Mq.`7MMF'                    ╔═════════════════════════════════════════════════════════════════╗
+echo                MM   `MM. MM                      ║                                                                 ║
+echo                MM   ,M9  MM                      ║                             status                              ║
+echo                MMmmdM9   MM                      ║                         webhook spammer                         ║
+echo                MM        MM      ,               ║                                                                 ║
+echo                MM        MM     ,M               ║                                                                 ║
+echo              .JMML.    .JMMmmmmMMM               ╚═════════════════════════════════════════════════════════════════╝
+echo.
+echo.
+set /p WEBHOOK_URL="webhook: "
+set /p MESSAGE="message: "
+
+:webhook_spam
+SET BODY="{\"username\": \"pl\", \"content\":\"%MESSAGE%\"}"
+curl -H "Content-Type: application/json" -d %BODY% %WEBHOOK_URL%
+goto webhook_spam
